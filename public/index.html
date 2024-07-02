@@ -1,11 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
 </head>
+
 <body>
-    
+   <h1>
+    Chat App Using Sockets
+   </h1>
+   <button id="btn">Click Me!</button>
+   <script src="/socket.io/socket.io.js"></script>
+   <script>
+    var socket = io();
+    document.getElementById('btn').onclick=()=>{
+      socket.emit('from_client');
+    };
+    socket.on('from_server',()=>{
+       console.log('got a new event from the server');
+      const div=document.createElement('div');
+      div.innerText='new message from server';
+      document.body.appendChild(div);
+    });
+   </script>
 </body>
+
 </html>
