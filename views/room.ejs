@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Box</title>
+</head>
+<body>
+    <h1>Chat Box</h1>
+    <input type="hidden" id="join" data-roomId="<%=roomId%>">
+    <input type="text" id="userName" placeholder="...User Name">
+    <input type="text" id="newMsg" placeholder="...Message">
+    <button id="btn">Send</button>
+  
+    <ul id="msgList">
+        <% chats.forEach((chat)=>{ %>
+            <li><%= chat.user %>: <%= chat.content %></li>
+         <% }) %>
+    </ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script >
+  var socket = io();
+  
+      let btn=document.getElementById('btn');
+      let inputMsg=document.getElementById('newMsg');
+      let msgList=document.getElementById('msgList');
+      let join=document.getElementById('join');
+      let userName=document.getElementById('userName');
+      socket.emit('join_room',{
+          roomId:join.getAttribute('data-roomId')
+        });
+
+      btn.onclick= function exec(){
+        socket.emit('send_msg',{
+          msg:inputMsg.value,
+          userName:userName.value,
+          roomId:join.getAttribute('data-roomId')
+        });
+      }
+
+      
+      socket.on('msg_rcvd',(data)=>{
+        let list=document.createElement('li');
+        list.innerText=`${data.userName}: ${data.msg}`;
+        msgList.appendChild(list);
+        
+      });
+    </script>
+</body>
+</html>
